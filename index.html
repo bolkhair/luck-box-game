@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>🎁 لعبة صندوق الحظ</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 50px; direction: rtl; }
+    button { padding: 10px 20px; font-size: 20px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>🎁 لعبة صندوق الحظ</h1>
+  <p>ادفع 1 USDT إلى العنوان التالي ثم اضغط على الزر للعب!</p>
+  <p><strong>عنوان المحفظة:</strong> 0xاكتب_عنوانك_هنا</p>
+  <p><strong>الشبكة:</strong> BEP20</p>
+
+  <button onclick="play()">🎲 العب الآن</button>
+  <h2 id="result"></h2>
+
+  <script>
+    function play() {
+      const chance = Math.random();
+      if (chance < 0.10) {
+        document.getElementById("result").innerText = "🎉 مبروك! ربحت 5 USDT!";
+      } else if (chance < 0.50) {
+        document.getElementById("result").innerText = "ربحت 0.5 USDT ✨";
+      } else {
+        document.getElementById("result").innerText = "للأسف، خسرت 😢";
+      }
+    }
+  </script>
+</body>
+</html>
