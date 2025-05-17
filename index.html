@@ -1,33 +1,187 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <title>🎁 لعبة صندوق الحظ</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>لعبة صندوق الحظ</title>
   <style>
-    body { font-family: Arial; text-align: center; padding: 50px; direction: rtl; }
-    button { padding: 10px 20px; font-size: 20px; cursor: pointer; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f7f7f7;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      max-width: 400px;
+      width: 90%;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 10px;
+      color: #5a2a83;
+    }
+    p.description {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .balance {
+      font-weight: bold;
+      margin-bottom: 20px;
+      font-size: 18px;
+      color: #117a37;
+    }
+    .box-image {
+      margin-bottom: 20px;
+    }
+    .box-image img {
+      width: 150px;
+      animation: shake 1s infinite;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    label {
+      display: block;
+      text-align: right;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #5a2a83;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 0;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+    button:disabled {
+      background-color: #bbb;
+      cursor: not-allowed;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: 700;
+      min-height: 30px;
+      color: #d9534f;
+    }
+    .success {
+      color: #117a37;
+    }
   </style>
 </head>
 <body>
-  <h1>🎁 لعبة صندوق الحظ</h1>
-  <p>ادفع 1 USDT إلى العنوان التالي ثم اضغط على الزر للعب!</p>
-  <p><strong>عنوان المحفظة:</strong> 0xاكتب_عنوانك_هنا</p>
-  <p><strong>الشبكة:</strong> BEP20</p>
+  <div class="container">
+    <h1>🎁 لعبة صندوق الحظ</h1>
+    <p class="description">
+      ادفع 1 USDT عبر Binance وجرب حظك!  
+      قد تربح حتى 5 USDT أو تخسر المبلغ بالكامل.
+    </p>
 
-  <button onclick="play()">🎲 العب الآن</button>
-  <h2 id="result"></h2>
+    <div class="balance">الرصيد الحالي: <span id="balance">0.00</span> USDT</div>
+
+    <div class="box-image">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="صندوق الحظ" />
+    </div>
+
+    <label for="walletAddress">أدخل عنوان محفظتك (Binance USDT TRC20 أو BEP20):</label>
+    <input type="text" id="walletAddress" placeholder="مثال: 0xABCD...1234" />
+
+    <button id="payBtn">لقد دفعت الآن</button>
+
+    <button id="playBtn" disabled>ابدأ اللعب الآن 🎲</button>
+
+    <div class="result" id="resultMsg"></div>
+  </div>
 
   <script>
-    function play() {
-      const chance = Math.random();
-      if (chance < 0.10) {
-        document.getElementById("result").innerText = "🎉 مبروك! ربحت 5 USDT!";
-      } else if (chance < 0.50) {
-        document.getElementById("result").innerText = "ربحت 0.5 USDT ✨";
-      } else {
-        document.getElementById("result").innerText = "للأسف، خسرت 😢";
+    const payBtn = document.getElementById('payBtn');
+    const playBtn = document.getElementById('playBtn');
+    const resultMsg = document.getElementById('resultMsg');
+    const balanceSpan = document.getElementById('balance');
+    const walletInput = document.getElementById('walletAddress');
+
+    let balance = 0;
+    let paymentConfirmed = false;
+
+    payBtn.addEventListener('click', () => {
+      const wallet = walletInput.value.trim();
+      if(wallet === '') {
+        alert('من فضلك أدخل عنوان المحفظة أولاً');
+        return;
       }
-    }
+      // هنا تضع تأكيد الدفع يدوياً أو تلقائياً حسب نظامك
+      paymentConfirmed = true;
+      alert('تم تأكيد الدفع. يمكنك الآن اللعب!');
+      playBtn.disabled = false;
+      payBtn.disabled = true;
+      walletInput.disabled = true;
+      resultMsg.textContent = '';
+    });
+
+    playBtn.addEventListener('click', () => {
+      if(!paymentConfirmed) {
+        alert('من فضلك أكد الدفع أولاً');
+        return;
+      }
+      // نتيجة الصندوق حسب النسب:
+      // 10% تربح 5 USDT
+      // 40% تربح 0.5 USDT
+      // 50% تخسر المبلغ (0)
+      const rand = Math.random();
+      let winAmount = 0;
+      let message = '';
+      if(rand < 0.10) {
+        winAmount = 5;
+        message = '🎉 مبروك! ربحت 5 USDT!';
+        resultMsg.className = 'result success';
+      } else if(rand < 0.50) {
+        winAmount = 0.5;
+        message = '👍 ربحت 0.5 USDT.';
+        resultMsg.className = 'result success';
+      } else {
+        winAmount = 0;
+        message = '💀 للأسف خسرت المبلغ.';
+        resultMsg.className = 'result';
+      }
+
+      balance += winAmount;
+      balanceSpan.textContent = balance.toFixed(2);
+
+      playBtn.disabled = true;
+      paymentConfirmed = false;
+      payBtn.disabled = false;
+      walletInput.disabled = false;
+      walletInput.value = '';
+      alert('جرب حظك مرة أخرى بالدفع!');
+      resultMsg.textContent = message;
+    });
   </script>
 </body>
 </html>
+
